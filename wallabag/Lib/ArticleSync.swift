@@ -17,9 +17,13 @@ class ArticleSync: NSObject {
     private let spotlightQueue = DispatchQueue(label: "fr.district-web.wallabag.spotlightQueue", qos: .background)
 
     private var page = 1
+    private var syncActive = false
 
     func sync() {
-        fetch()
+        if !syncActive {
+            syncActive = true
+            fetch()
+        }
     }
 
     private func fetch(page: Int = 1) {
@@ -42,6 +46,7 @@ class ArticleSync: NSObject {
                     self.fetch(page: self.page)
                 } else {
                     self.syncQueue.async(execute: DispatchWorkItem {
+                        self.syncActive = false
                         self.page = 1
                     })
                 }

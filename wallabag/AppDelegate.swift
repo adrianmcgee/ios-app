@@ -11,8 +11,16 @@ import WallabagKit
 import AlamofireNetworkActivityIndicator
 import SwiftyBeaver
 import CoreSpotlight
+import Swinject
 
 let log = SwiftyBeaver.self
+let container: Container = {
+    let container = Container()
+    container.register(ArticleSync.self) { _ in
+        ArticleSync()
+        }.inObjectScope(.container)
+    return container
+}()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -63,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if WallabagApi.isConfigured() {
             guard let mainController = window?.rootViewController! as? UINavigationController,
                 let articlesTable = mainController.viewControllers.first as? ArticlesTableViewController else {
-                return false
+                    return false
             }
             articlesTable.restoreUserActivityState(userActivity)
             return true
@@ -108,8 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func updateBadge() {
         if WallabagApi.isConfigured() {
-            let sync = ArticleSync()
-            //sync.sync()
+            container.resolve(ArticleSync.self)!.sync()
         }
         log.info("Update badge")
         let request = Entry.fetchEntryRequest()
@@ -127,7 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIApplication.shared.applicationIconBadgeNumber = ((CoreData.fetch(request) as? [Entry]) ?? []).count
     }
-
+    
     func resetApplication() {
         Setting.purge()
         CoreData.deleteAll("Entry")

@@ -11,10 +11,11 @@ import UserNotifications
 import WallabagKit
 import CoreData
 import CoreSpotlight
+import Swinject
 
 final class ArticlesTableViewController: UITableViewController {
     
-    let sync = ArticleSync()
+    let sync: ArticleSync = container.resolve(ArticleSync.self)!
     let searchController = UISearchController(searchResultsController: nil)
 
     var page: Int = 2
