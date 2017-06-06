@@ -13,7 +13,7 @@ import CoreData
 import CoreSpotlight
 
 final class ArticlesTableViewController: UITableViewController {
-    
+
     let sync = ArticleSync()
     let searchController = UISearchController(searchResultsController: nil)
 
@@ -21,7 +21,7 @@ final class ArticlesTableViewController: UITableViewController {
     var refreshing: Bool = false
     var entries: [Entry] = []
     var mode: Setting.RetrieveMode = Setting.getDefaultMode()
-    
+
     @IBOutlet weak var menu: UIBarButtonItem!
     @IBOutlet weak var add: UIBarButtonItem!
 
@@ -125,13 +125,13 @@ final class ArticlesTableViewController: UITableViewController {
         tableView.tableHeaderView = searchController.searchBar
     }
 
-    func managedObjectContextObjectsDidChange(notification: NSNotification) {
+    @objc func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let _ = notification.userInfo else { return }
         log.debug("managedObjectContextObjectsDidChange")
         handleRefresh()
     }
 
-    func scrollTop() {
+    @objc func scrollTop() {
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
     }
 
@@ -154,7 +154,7 @@ final class ArticlesTableViewController: UITableViewController {
         return cell
     }
 
-    func handleRefresh() {
+    @objc func handleRefresh() {
         updateUi()
         sync.sync()
         log.debug("Handle refresh")
