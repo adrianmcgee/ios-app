@@ -126,14 +126,14 @@ struct ThemeManager {
 
         let bar = UINavigationBar.appearance()
         bar.setBackgroundImage(theme.navigationBarBackground, for: .default)
-        bar.titleTextAttributes = [NSForegroundColorAttributeName: theme.color]
+        bar.titleTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: theme.color]
         bar.barStyle = theme.barStyle
 
         let toolbar = UIToolbar.appearance()
         toolbar.setBackgroundImage(theme.navigationBarBackground, forToolbarPosition: .any, barMetrics: .default)
 
         UIBarButtonItem.appearance().setTitleTextAttributes([
-            NSFontAttributeName: UIFont(name: "UbuntuTitling-Bold", size: 15.0)!
+            NSAttributedStringKey.font.rawValue: UIFont(name: "UbuntuTitling-Bold", size: 15.0)!
             ], for: .normal)
 
         NotificationCenter.default.post(name: Notification.Name.themeUpdated, object: nil)
