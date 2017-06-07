@@ -14,15 +14,16 @@ import CoreSpotlight
 import Swinject
 
 final class ArticlesTableViewController: UITableViewController {
-    
+
+    let setting: Setting = container.resolve(Setting.self)!
     let sync: ArticleSync = container.resolve(ArticleSync.self)!
     let searchController = UISearchController(searchResultsController: nil)
 
     var page: Int = 2
     var refreshing: Bool = false
     var entries: [Entry] = []
-    var mode: Setting.RetrieveMode = Setting.getDefaultMode()
-    
+    var mode: Setting.RetrieveMode = container.resolve(Setting.self)!.getDefaultMode()
+
     @IBOutlet weak var menu: UIBarButtonItem!
     @IBOutlet weak var add: UIBarButtonItem!
 
@@ -79,16 +80,16 @@ final class ArticlesTableViewController: UITableViewController {
         titleLabel.isUserInteractionEnabled = true
         titleLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.scrollTop)))
         titleLabel.text = mode.humainReadable()
-        titleLabel.textColor = Setting.getTheme().color
+        titleLabel.textColor = setting.getTheme().color
         navigationItem.titleView = titleLabel
 
-        navigationController?.navigationBar.setBackgroundImage(Setting.getTheme().navigationBarBackground, for: .default)
-        menu.tintColor = Setting.getTheme().tintColor
-        add.tintColor = Setting.getTheme().tintColor
+        navigationController?.navigationBar.setBackgroundImage(setting.getTheme().navigationBarBackground, for: .default)
+        menu.tintColor = setting.getTheme().tintColor
+        add.tintColor = setting.getTheme().tintColor
 
-        tableView.backgroundColor = Setting.getTheme().backgroundColor
+        tableView.backgroundColor = setting.getTheme().backgroundColor
         for row in 0 ... tableView.numberOfRows(inSection: 0) {
-            tableView.cellForRow(at: IndexPath(row: row, section: 0))?.backgroundColor = Setting.getTheme().backgroundColor
+            tableView.cellForRow(at: IndexPath(row: row, section: 0))?.backgroundColor = setting.getTheme().backgroundColor
         }
     }
 

@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import Swinject
 
 final class ThemeChoiceTableViewController: UITableViewController {
+
+    let setting: Setting = container.resolve(Setting.self)!
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -25,7 +28,7 @@ final class ThemeChoiceTableViewController: UITableViewController {
 
         cell.textLabel?.text = theme.rawValue.ucFirst
 
-        if theme == Setting.getTheme() {
+        if theme == setting.getTheme() {
             cell.accessoryType = .checkmark
         }
 
@@ -41,7 +44,7 @@ final class ThemeChoiceTableViewController: UITableViewController {
 
         let selectedTheme = ThemeManager.Theme.allThemes[indexPath.row]
 
-        Setting.setTheme(value: selectedTheme)
+        setting.setTheme(value: selectedTheme)
 
         _ = navigationController?.popViewController(animated: true)
     }

@@ -9,9 +9,11 @@
 import UIKit
 import TUSafariActivity
 import WallabagKit
+import Swinject
 
 final class ArticleViewController: UIViewController {
 
+    let setting: Setting = container.resolve(Setting.self)!
     var lastOffsetY: CGFloat = 0
     var update: Bool = true
     var entry: Entry! {
@@ -72,7 +74,7 @@ final class ArticleViewController: UIViewController {
         updateUi()
         loadArticleContent()
         contentWeb.scrollView.delegate = self
-        contentWeb.backgroundColor = Setting.getTheme().backgroundColor
+        contentWeb.backgroundColor = setting.getTheme().backgroundColor
     }
 
     private func loadArticleContent() {
@@ -85,8 +87,8 @@ final class ArticleViewController: UIViewController {
         do {
             let html = try String(contentsOfFile: Bundle.main.path(forResource: "article", ofType: "html")!)
 
-            let justify = Setting.isJustifyArticle() ? "justify.css" : ""
-            let theme = Setting.getTheme()
+            let justify = setting.isJustifyArticle() ? "justify.css" : ""
+            let theme = setting.getTheme()
 
             return String(format: html, arguments: [justify, theme.rawValue, entry.title!, entry.content!])
         } catch {

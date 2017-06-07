@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import Swinject
 
 class ThemedTableViewCell: UITableViewCell {
+
+    let setting: Setting = container.resolve(Setting.self)!
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -23,10 +26,10 @@ class ThemedTableViewCell: UITableViewCell {
      Apply the current theme to the cell
      */
     func setupTheme() {
-        backgroundColor = Setting.getTheme().backgroundColor
-        textLabel?.textColor = Setting.getTheme().color
+        backgroundColor = setting.getTheme().backgroundColor
+        textLabel?.textColor = setting.getTheme().color
 
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = Setting.getTheme().backgroundSelectedColor
+        selectedBackgroundView?.backgroundColor = setting.getTheme().backgroundSelectedColor
     }
 }

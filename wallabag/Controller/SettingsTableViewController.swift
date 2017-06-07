@@ -8,6 +8,7 @@
 
 import UIKit
 import WallabagKit
+import Swinject
 
 final class SettingsTableViewController: UITableViewController {
 
@@ -15,12 +16,14 @@ final class SettingsTableViewController: UITableViewController {
     @IBOutlet weak var justifySwitch: UISwitch!
     @IBOutlet weak var badgeSwitch: UISwitch!
 
+    let setting: Setting = container.resolve(Setting.self)!
+
     @IBAction func justifySwitch(_ sender: UISwitch) {
-        Setting.setJustifyArticle(value: sender.isOn)
+        setting.setJustifyArticle(value: sender.isOn)
     }
 
     @IBAction func badgeSwitch(_ sender: UISwitch) {
-        Setting.setBadgeEnable(value: sender.isOn)
+        setting.setBadgeEnable(value: sender.isOn)
     }
 
     override func viewDidLoad() {
@@ -28,13 +31,13 @@ final class SettingsTableViewController: UITableViewController {
 
         prepareDefaultList()
 
-        justifySwitch.setOn(Setting.isJustifyArticle(), animated: false)
-        badgeSwitch.setOn(Setting.isBadgeEnable(), animated: false)
-        currentThemeLabel.text = Setting.getTheme().rawValue.ucFirst
+        justifySwitch.setOn(setting.isJustifyArticle(), animated: false)
+        badgeSwitch.setOn(setting.isBadgeEnable(), animated: false)
+        currentThemeLabel.text = setting.getTheme().rawValue.ucFirst
     }
 
     override func didMove(toParentViewController parent: UIViewController?) {
-        currentThemeLabel.text = Setting.getTheme().rawValue.ucFirst
+        currentThemeLabel.text = setting.getTheme().rawValue.ucFirst
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -44,7 +47,7 @@ final class SettingsTableViewController: UITableViewController {
             }
 
             if let cell = tableView.cellForRow(at: indexPath) {
-                Setting.setDefaultMode(mode: Setting.RetrieveMode(rawValue: cell.reuseIdentifier!)!)
+                setting.setDefaultMode(mode: Setting.RetrieveMode(rawValue: cell.reuseIdentifier!)!)
                 cell.accessoryType = .checkmark
             }
 
@@ -55,7 +58,7 @@ final class SettingsTableViewController: UITableViewController {
     fileprivate func prepareDefaultList() {
         for row in 0 ... tableView.numberOfRows(inSection: 0) {
             if let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)) {
-                if Setting.RetrieveMode(rawValue: cell.reuseIdentifier!)! == Setting.getDefaultMode() {
+                if Setting.RetrieveMode(rawValue: cell.reuseIdentifier!)! == setting.getDefaultMode() {
                     cell.accessoryType = .checkmark
                 }
             }

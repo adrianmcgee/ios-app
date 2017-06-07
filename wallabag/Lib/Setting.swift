@@ -11,9 +11,14 @@ import WallabagKit
 
 class Setting {
 
-    static let sharedDomain = "group.wallabag.share_extension"
-    static var standard = UserDefaults.standard
-    static var shared = UserDefaults(suiteName: sharedDomain)!
+    let sharedDomain = "group.wallabag.share_extension"
+    let standard: UserDefaults
+    let shared: UserDefaults
+
+    init(standard: UserDefaults, shared: UserDefaults) {
+        self.standard = standard
+        self.shared = shared
+    }
 
     enum RetrieveMode: String {
         case allArticles
@@ -42,26 +47,26 @@ class Setting {
         case badge
     }
 
-    static func getDefaultMode() -> RetrieveMode {
+    func getDefaultMode() -> RetrieveMode {
         guard let value = standard.string(forKey: Const.defaultMode.rawValue) else {
             return .allArticles
         }
         return RetrieveMode(rawValue: value)!
     }
 
-    static func setDefaultMode(mode: RetrieveMode) {
+    func setDefaultMode(mode: RetrieveMode) {
         standard.set(mode.rawValue, forKey: Const.defaultMode.rawValue)
     }
 
-    static func isJustifyArticle() -> Bool {
+    func isJustifyArticle() -> Bool {
         return standard.bool(forKey: Const.justifyArticle.rawValue)
     }
 
-    static func setJustifyArticle(value: Bool) {
+    func setJustifyArticle(value: Bool) {
         standard.set(value, forKey: Const.justifyArticle.rawValue)
     }
 
-    static func isBadgeEnable() -> Bool {
+    func isBadgeEnable() -> Bool {
         //enabled by default
         if nil == standard.object(forKey: Const.badge.rawValue) {
             return true
@@ -69,11 +74,11 @@ class Setting {
         return standard.bool(forKey: Const.badge.rawValue)
     }
 
-    static func setBadgeEnable(value: Bool) {
+    func setBadgeEnable(value: Bool) {
         standard.set(value, forKey: Const.badge.rawValue)
     }
 
-    static func getTheme() -> ThemeManager.Theme {
+    func getTheme() -> ThemeManager.Theme {
         guard let value = standard.string(forKey: Const.articleTheme.rawValue) else {
             return .white
         }
@@ -81,12 +86,12 @@ class Setting {
         return ThemeManager.Theme(rawValue: value) ?? .white
     }
 
-    static func setTheme(value: ThemeManager.Theme) {
+    func setTheme(value: ThemeManager.Theme) {
         standard.set(value.rawValue, forKey: Const.articleTheme.rawValue)
         ThemeManager.apply(theme: value)
     }
 
-    static func deleteServer() {
+    func deleteServer() {
         shared.removeObject(forKey: "host")
         shared.removeObject(forKey: "clientId")
         shared.removeObject(forKey: "clientSecret")
@@ -97,7 +102,7 @@ class Setting {
         shared.synchronize()
     }
 
-    static func purge() {
+    func purge() {
         defer {
             standard.synchronize()
             shared.synchronize()

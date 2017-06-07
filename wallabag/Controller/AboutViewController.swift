@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Swinject
 
 class AboutViewController: UIViewController {
 
@@ -14,7 +15,7 @@ class AboutViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Setting.getTheme().backgroundColor
+        view.backgroundColor = container.resolve(Setting.self)!.getTheme().backgroundColor
 
         let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "0"
         let build = Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? "0"

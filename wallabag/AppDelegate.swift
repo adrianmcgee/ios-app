@@ -19,12 +19,17 @@ let container: Container = {
     container.register(ArticleSync.self) { _ in
         ArticleSync()
         }.inObjectScope(.container)
+    container.register(Setting.self) { _ in
+        let sharedDomain = "group.wallabag.share_extension"
+        return Setting(standard: UserDefaults.standard, shared: UserDefaults(suiteName: sharedDomain)!)
+    }.inObjectScope(.container)
     return container
 }()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    let setting: Setting = container.resolve(Setting.self)!
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -62,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NetworkActivityIndicatorManager.shared.isEnabled = true
         NetworkActivityIndicatorManager.shared.startDelay = 0.1
 
-        ThemeManager.apply(theme: Setting.getTheme())
+        ThemeManager.apply(theme: setting.getTheme())
 
         return true
     }
@@ -107,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func requestBadge() {
-        if Setting.isBadgeEnable() {
+        if setting.isBadgeEnable() {
             UIApplication.shared.setMinimumBackgroundFetchInterval(3600.0)
             let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
             UIApplication.shared.registerUserNotificationSettings(settings)
@@ -120,7 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         log.info("Update badge")
         let request = Entry.fetchEntryRequest()
-        switch Setting.getDefaultMode() {
+        switch setting.getDefaultMode() {
         case .unarchivedArticles:
             request.predicate = NSPredicate(format: "is_archived == 0")
             break
@@ -136,7 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func resetApplication() {
-        Setting.purge()
+        setting.purge()
         CoreData.deleteAll("Entry")
     }
 }
